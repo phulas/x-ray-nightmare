@@ -1,0 +1,32 @@
+{
+  "name": "x-ray-nightmare",
+  "version": "0.1.0",
+  "description": "Nightmare (electron based) driver for the x-ray web scraper.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phulas/x-ray-nightmare.git"
+  },
+  "keywords": [
+    "x-ray",
+    "nightmare",
+    "electron",
+    "web",
+    "scraper"
+  ],
+  "author": {
+    "name": "Mashaal Memon",
+    "email": "mashaalm@phulas.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/phulas/x-ray-nightmare/issues"
+  },
+  "homepage": "https://github.com/phulas/x-ray-nightmare#readme",
+  "devDependencies": {
+    "debug": "^2.2.0",
+    "nightmare": "^2.3.4",
+    "normalizeurl": "^0.1.3",
+    "wrap-fn": "^0.1.5"
+  }
+}
