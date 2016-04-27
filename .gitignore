@@ -35,7 +35,10 @@ jspm_packages
 
 # Mac OSX
 .DS_Store
-Icon
+Icon?
 
 # Webstorm related files
 .idea
+
+# Transpiler related
+*compiled.js*
