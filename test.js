@@ -16,9 +16,33 @@ describe('X-ray-nightmare tests', function () {
     it ('should get Google title', function (done) {
         var x = Xray().driver(NightmareElectron());
         x('http://www.google.com', 'title')(function(err,title) {
-            console.log('Title is: ' + title);
-            assert.equal(title, 'Google' );
-            done();
+            console.log('Title scraped is: ' + title);
+            // assert will throw an error if it fails because this is an async
+            try{
+                assert.equal(title, 'Google' );
+                done();
+            }
+            // if assertion fails, error thrown so catch it so it isn't a timeout problem
+            catch (err) {
+                done(err);
+            };
+
+        });
+    });
+    it ('should NOT get Google title', function (done) {
+        var x = Xray().driver(NightmareElectron());
+        x('http://www.phulas.com', 'title')(function(err,title) {
+            console.log('Title scraped is: ' + title);
+            // assert will throw an error if it fails because this is an async
+            try{
+                assert.notEqual(title, 'Google' );
+                done();
+            }
+                // if assertion fails, error thrown so catch it so it isn't a timeout problem
+            catch (err) {
+                done(err);
+            };
+
         });
     });
 });
