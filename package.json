@@ -1,6 +1,6 @@
 {
   "name": "x-ray-nightmare",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Nightmare (electron based) driver for the x-ray web scraper.",
   "main": "index.js",
   "repository": {
