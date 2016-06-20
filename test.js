@@ -3,7 +3,7 @@
  */
 
 var chai = require ('chai');
-var Xray = require('../x-ray');
+var Xray = require('x-ray');
 var NightmareElectron = require('./');
 
 
@@ -14,7 +14,8 @@ var NightmareElectron = require('./');
 var assert = chai.assert;
 describe('X-ray-nightmare tests', function () {
     it ('should get Google title', function (done) {
-        var x = Xray().driver(NightmareElectron());
+        var nightmareDriver = NightmareElectron();
+        var x = Xray().driver(nightmareDriver);
         x('http://www.google.com', 'title')(function(err,title) {
             console.log('Title scraped is: ' + title);
             // assert will throw an error if it fails because this is an async
@@ -25,12 +26,18 @@ describe('X-ray-nightmare tests', function () {
             // if assertion fails, error thrown so catch it so it isn't a timeout problem
             catch (err) {
                 done(err);
+            }
+            finally
+            {
+                // gracefully shutdown nightmare driver
+                nightmareDriver();
             };
 
         });
     });
     it ('should NOT get Google title', function (done) {
-        var x = Xray().driver(NightmareElectron());
+        var nightmareDriver = NightmareElectron();
+        var x = Xray().driver(nightmareDriver);
         x('http://www.phulas.com', 'title')(function(err,title) {
             console.log('Title scraped is: ' + title);
             // assert will throw an error if it fails because this is an async
@@ -41,6 +48,11 @@ describe('X-ray-nightmare tests', function () {
                 // if assertion fails, error thrown so catch it so it isn't a timeout problem
             catch (err) {
                 done(err);
+            }
+            finally
+            {
+                // gracefully shutdown nightmare driver
+                nightmareDriver();
             };
 
         });

@@ -30,6 +30,7 @@
     "wrap-fn": "^0.1.5"
   },
   "devDependencies": {
-    "chai": "^3.5.0"
+    "chai": "^3.5.0",
+    "x-ray": "^2.3.0"
   }
 }

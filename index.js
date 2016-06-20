@@ -31,45 +31,51 @@ function driver(options, fn) {
 
 
     return function nightmare_driver(ctx, done) {
-        debug('going to %s', ctx.url);
 
-        nightmare
-            .on('page',function(type,message,stack) {
-                if (type == 'error')
-                    debug('page error: %s',message);
-            })
-            .on('did-fail-load', function(event, errorCode, errorDescription) {
-                debug('failed to load with error %s: %s', errorCode, errorDescription);
-                return done (new Error(errorDescription))
-            })
-            .on('did-get-redirect-request', function(event, oldUrl, newUrl, isMainFrame) {
-                if (normalize(oldUrl) == normalize(ctx.url)) {
-                    debug('redirect: %s', newUrl);
-                    ctx.url = newUrl;
-                }
-            })
-            .on('will-navigate', function(url) {
-                if (normalize(url) == normalize(ctx.url)) {
-                    debug('redirect: %s', url);
-                    ctx.url = url;
-                }
-            })
-            .on('did-get-response-details', function(event, status, newUrl, originalUrl, httpResponseCode, requestMethod, referrer, headers) {
-                if (normalize(originalUrl) == normalize(ctx.url)) {
-                    debug('redirect: %s', newUrl);
-                    ctx.url = newUrl;
-                };
-                if (normalize(newUrl) == normalize(ctx.url) && httpResponseCode == 200) {
-                    debug('got response from %s: %s', ctx.url, httpResponseCode);
-                    ctx.status = httpResponseCode;
-                };
-            })
-            .on('did-finish-load', function() {
-                debug('finished loading %s', ctx.url);
-            })
+        if (ctx !=null) {
+            debug('goingto %s', ctx.url);
 
 
-        wrapfn(fn, select)(ctx, nightmare);
+            nightmare
+                .on('page', function (type, message, stack) {
+                    if (type == 'error')
+                        debug('page error: %s', message);
+                })
+                .on('did-fail-load', function (event, errorCode, errorDescription) {
+                    debug('failed to load with error %s: %s', errorCode, errorDescription);
+                    return done(new Error(errorDescription))
+                })
+                .on('did-get-redirect-request', function (event, oldUrl, newUrl, isMainFrame) {
+                    if (normalize(oldUrl) == normalize(ctx.url)) {
+                        debug('redirect: %s', newUrl);
+                        ctx.url = newUrl;
+                    }
+                })
+                .on('will-navigate', function (url) {
+                    if (normalize(url) == normalize(ctx.url)) {
+                        debug('redirect: %s', url);
+                        ctx.url = url;
+                    }
+                })
+                .on('did-get-response-details', function (event, status, newUrl, originalUrl, httpResponseCode, requestMethod, referrer, headers) {
+                    if (normalize(originalUrl) == normalize(ctx.url)) {
+                        debug('redirect: %s', newUrl);
+                        ctx.url = newUrl;
+                    }
+                    ;
+                    if (normalize(newUrl) == normalize(ctx.url) && httpResponseCode == 200) {
+                        debug('got response from %s: %s', ctx.url, httpResponseCode);
+                        ctx.status = httpResponseCode;
+                    }
+                    ;
+                })
+                .on('did-finish-load', function () {
+                    debug('finished loading %s', ctx.url);
+                })
+
+
+            wrapfn(fn, select)(ctx, nightmare);
+        }
 
         function select(err, ret) {
             if (err) return done(err);
@@ -80,13 +86,26 @@ function driver(options, fn) {
                 })
 
             nightmare
-                .end()
                 .then(function(body) {
                     ctx.body = body;
                     debug('%s - %s', ctx.url, ctx.status);
                     done(null, ctx);
                 })
         };
+
+        if (ctx == null || ctx == undefined) {
+            debug('attempting to shut down nightmare instance gracefully');
+            // put bogus message in the queue so nightmare end will execute
+            nightmare.viewport(1,1);
+            // force shutdown and disconnect from electron
+            nightmare.
+            end().
+            then(function(body) {
+                debug('gracefully shut down nightmare instance ');
+
+            });
+        }
+
     }
 }
 

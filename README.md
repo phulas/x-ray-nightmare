@@ -15,12 +15,19 @@ npm install x-ray-nightmare
 var NightmareElectron = require('x-ray-nightmare');
 var Xray = require('x-ray');
 
+// instantiate driver for later shutdown
+var nightmareDriver = NightmareElectron();
+
 var x = Xray()
-  .driver(NightmareElectron());
+  .driver(nightmareDriver);
 
 x('http://google.com', 'title')(function(err, str) {
   if (err) return done(err);
   assert.equal('Google', str);
+  
+  // gracefully shutdown driver
+  nightmareDriver();
+  
   done();
 })
 ```
@@ -29,8 +36,11 @@ x('http://google.com', 'title')(function(err, str) {
 
 ### NightmareElectron([options|fn], [fn])
 
-Initialize the phantom driver with `options` being passed to Nightmare and
+Initialize the NightmareElectron driver with `options` being passed to Nightmare and
 an optional custom `fn` with the signature `function(ctx,nightmare)`.
+
+Returns the driver object which must be called as a function once when no longer needed
+in order to gracefully shut down the nightmare object (results in a call to the Nightmare [.end()](https://github.com/segmentio/nightmare#end) function)
 
 ##### Options
 
@@ -70,8 +80,11 @@ Note that the page html is passed off to x-ray and  `nightmare.end()` is execute
 ## Test
 
 ```
-npm install
-make test
+npm install 
+npm install -only=dev
+
+#run mocha on test.js file
+
 ```
 
 ## Debug Flags
